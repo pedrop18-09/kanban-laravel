@@ -3,27 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class Board extends Model
 {
+    protected $fillable = ['name'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function create()
+    public function lists(): HasMany
     {
-        return view('boards.create');
+        return $this->hasMany(BoardList::class)->orderBy('position');
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name'=> 'required|string|max:255'
-        ]);
-
-        auth()->user()-boards()-create($validated);
-
-        return redirect()->route('boards.index');
-    }
 }

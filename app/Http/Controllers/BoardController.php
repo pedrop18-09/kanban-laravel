@@ -22,7 +22,7 @@ class BoardController extends Controller
      */
     public function create()
     {
-        //
+        return view('boards.create');
     }
 
     /**
@@ -30,38 +30,62 @@ class BoardController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name'=> 'required|string|max:255',
+        ]);
+
+        auth()->user()->boards()->create($validated);
+
+        return redirect()->route('boards.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Board $board)
     {
-        //
+        abort_if($board->user_id !== auth()->id(), 403);
+
+        $board->load('lists');
+
+        return view('boards.show', compact('board'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Board $board)
     {
-        //
+        $this->authorize('update', $board);
+
+        return view('boards.edit', compact('board'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Board $board)
     {
-        //
+        $this->authorize('update', $board);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $board->update($validated);
+
+        return redirect()->route('boards.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Board $board)
     {
-        //
+        $this->authorize('delete', $board);
+        
+        $board->delete();
+
+        return redirect()->route('boards.index');
     }
 }
