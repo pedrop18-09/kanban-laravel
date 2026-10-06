@@ -38,7 +38,7 @@ class BoardListPolicy
      */
     public function update(User $user, BoardList $boardList): bool
     {
-        return $user->id === $boardList->$board->user_id;
+        return $user->id === $boardList->board->user_id;
     }
 
     /**
@@ -46,7 +46,7 @@ class BoardListPolicy
      */
     public function delete(User $user, BoardList $boardList): bool
     {
-        return $user->id === $boardList->$board->user_id;
+        return $user->id === $boardList->board->user_id;
     }
 
     /**
